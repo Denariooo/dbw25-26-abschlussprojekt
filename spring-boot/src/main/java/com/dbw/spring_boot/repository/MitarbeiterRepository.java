@@ -1,0 +1,56 @@
+package com.dbw.spring_boot.repository;
+
+import com.dbw.spring_boot.model.Mitarbeiter;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+@Repository
+public class MitarbeiterRepository {
+
+    private final JdbcTemplate jdbcTemplate;
+
+    public MitarbeiterRepository(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
+    public List<Mitarbeiter> findAll() {
+        return jdbcTemplate.query("SELECT * FROM mitarbeiter",
+                (rs, rowNum) -> {
+                    Mitarbeiter m = new Mitarbeiter();
+                    m.setPersonalNr(rs.getInt("personal_nr"));
+                    m.setVorname(rs.getString("vorname"));
+                    m.setNachname(rs.getString("nachname"));
+                    m.setEmail(rs.getString("email"));
+                    m.setPasswort(rs.getString("passwort"));
+                    return m;
+                });
+    }
+
+    public Mitarbeiter findById(int id) {
+        return jdbcTemplate.queryForObject(
+                "SELECT * FROM mitarbeiter WHERE personal_nr = ?",
+                new Object[]{id},
+                (rs, rowNum) -> {
+                    Mitarbeiter m = new Mitarbeiter();
+                    m.setPersonalNr(rs.getInt("personal_nr"));
+                    m.setVorname(rs.getString("vorname"));
+                    m.setNachname(rs.getString("nachname"));
+                    m.setEmail(rs.getString("email"));
+                    m.setPasswort(rs.getString("passwort"));
+                    return m;
+                });
+    }
+
+    public void save(Mitarbeiter m) {
+        jdbcTemplate.update(
+                "INSERT INTO mitarbeiter (vorname, nachname, email, passwort) VALUES (?, ?, ?, ?)",
+                m.getVorname(), m.getNachname(), m.getEmail(), m.getPasswort()
+        );
+    }
+
+    public void deleteById(int id) {
+        jdbcTemplate.update("DELETE FROM mitarbeiter WHERE personal_nr = ?", id);
+    }
+}
