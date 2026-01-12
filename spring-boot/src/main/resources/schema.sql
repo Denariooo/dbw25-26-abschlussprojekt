@@ -125,11 +125,46 @@ BEGIN
 end
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER trg_bestellposition_update
-    BEFORE UPDATE OF menge
-    on bestellposition
+CREATE TRIGGER trg_bestellposition_insert
+    BEFORE INSERT
+    ON bestellposition
     FOR EACH ROW
 EXECUTE FUNCTION trg_bestellposition_insert();
+
+--
+
+CREATE OR REPLACE FUNCTION trg_bestellposition_update() RETURNS TRIGGER AS
+$$
+DECLARE
+    diff        int;
+    prod_lager  int;
+    best_status varchar(20);
+BEGIN
+    select status into best_status from bestellung where bestellung_id = new.bestellung_id;
+
+    if best_status = 'storniert' then
+        return new;
+    end if;
+
+    diff := new.menge - old.menge;
+
+    select lagerbestand into prod_lager from produkt where sku = new.sku;
+
+    if diff > 0 AND prod_lager < diff then
+        RAISE EXCEPTION 'Nicht genügend Lagerbestand für Produkt %', new.sku;
+    end if;
+
+    UPDATE produkt set lagerbestand = lagerbestand - diff where sku = new.sku;
+    return new;
+end
+
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_bestellposition_update
+    BEFORE UPDATE OF menge
+    ON bestellposition
+    FOR EACH ROW
+EXECUTE FUNCTION trg_bestellposition_update();
 
 --
 
