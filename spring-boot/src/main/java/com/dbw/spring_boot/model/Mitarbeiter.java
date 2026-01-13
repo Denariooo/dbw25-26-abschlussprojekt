@@ -1,20 +1,17 @@
 package com.dbw.spring_boot.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class Mitarbeiter {
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private int personalNr;
+    private Integer personalNr;
     private String passwort;
     private String email;
     private String vorname;
     private String nachname;
 
-    public int getPersonalNr() {
+    public Integer getPersonalNr() {
         return personalNr;
     }
 
-    public void setPersonalNr(int personalNr) {
+    public void setPersonalNr(Integer personalNr) {
         this.personalNr = personalNr;
     }
 
