@@ -1,7 +1,11 @@
 package com.dbw.spring_boot.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Adresse {
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private int adresseId;
+
     private boolean aktiv;
     private String strasse;
     private String hausnummer;
