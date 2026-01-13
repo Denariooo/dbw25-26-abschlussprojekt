@@ -52,10 +52,10 @@ CREATE TABLE mitarbeiter
 CREATE TABLE bestellung
 (
     bestellung_id     serial PRIMARY KEY,
-    datum             timestamp   NOT NULL,
-    status            varchar(20) NOT NULL check (status IN ('neu', 'bezahlt', 'versendet', 'abgeschlossen', 'storniert')),
-    mitarbeiterzuweis int         NOT NULL,
-    kunde_id          int         NOT NULL,
+    datum             timestamp WITH TIME ZONE NOT NULL,
+    status            varchar(20)              NOT NULL check (status IN ('neu', 'bezahlt', 'versendet', 'abgeschlossen', 'storniert')),
+    mitarbeiterzuweis int                      NOT NULL,
+    kunde_id          int                      NOT NULL,
     FOREIGN KEY (mitarbeiterzuweis) REFERENCES mitarbeiter (personal_nr),
     FOREIGN KEY (kunde_id) REFERENCES kunde (kunde_id)
 );
