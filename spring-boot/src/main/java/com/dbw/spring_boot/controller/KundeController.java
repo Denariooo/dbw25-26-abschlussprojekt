@@ -32,13 +32,11 @@ public class KundeController {
 
     @PostMapping
     public Kunde createKunde(@RequestBody Kunde kunde) {
-        // Adressen ignorieren, nur Email/Vorname/Nachname/Passwort
         return kundeRepository.createKunde(kunde);
     }
 
     @PutMapping("/{id}")
     public Kunde updateKunde(@PathVariable int id, @RequestBody Kunde kunde) {
-        // Adressen bleiben unverändert
         return kundeRepository.updateKunde(id, kunde);
     }
 }

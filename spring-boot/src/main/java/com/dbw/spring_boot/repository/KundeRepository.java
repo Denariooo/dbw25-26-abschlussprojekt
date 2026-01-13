@@ -21,8 +21,6 @@ public class KundeRepository {
         this.jdbc = jdbc;
     }
 
-    // --- CRUD Methoden ---
-
     public Kunde createKunde(Kunde kunde) {
         String sql = "INSERT INTO kunde (email, vorname, nachname, passwort) VALUES (?, ?, ?, ?) RETURNING kunde_id";
         Integer id = jdbc.queryForObject(sql,
@@ -30,7 +28,7 @@ public class KundeRepository {
                 Integer.class
         );
         kunde.setKundeId(id);
-        kunde.setAdressen(new ArrayList<>()); // Adressen bleiben leer
+        kunde.setAdressen(new ArrayList<>());
         return kunde;
     }
 
@@ -58,7 +56,6 @@ public class KundeRepository {
         return queryKunden(null, null);
     }
 
-    // --- interne Abfrage (liefert auch Adressen, aber werden nicht verändert) ---
     private List<Kunde> queryKunden(String where, Object param) {
         String sql = BASE_SQL + (where != null ? " WHERE " + where : "");
         Map<Integer, Kunde> kunden = new LinkedHashMap<>();
@@ -82,7 +79,6 @@ public class KundeRepository {
                         return k;
                     });
 
-                    // Adressen nur zum Lesen hinzufügen
                     int aid = rs.getInt("adresse_id");
                     if (!rs.wasNull()) {
                         Adresse a = new Adresse();
