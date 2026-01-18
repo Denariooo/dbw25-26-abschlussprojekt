@@ -17,4 +17,10 @@ public class ReportRepository {
     public List<Map<String, Object>> getKundeSummeAnzahlBestellungen() {
         return jdbc.queryForList("SELECT kunde_id, email, anzahl_bestellungen, gesamtsumme from v_kunde_summe_anzahl_bestellungen");
     }
+
+    public List<Map<String, Object>> getProduktVerkaufszahlen() {
+        return jdbc.queryForList(
+                "SELECT sku, name, gesamtverkaufteMenge, umsatz, anzahlBestellungen FROM v_produkt_verkaufszahlen"
+        );
+    }
 }

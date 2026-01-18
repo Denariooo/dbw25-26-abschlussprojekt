@@ -227,3 +227,17 @@ FROM kunde k
          LEFT JOIN produkt p on bp.sku = p.sku
 GROUP BY k.kunde_id, k.email
 ORDER BY k.kunde_id ASC;
+
+CREATE OR REPLACE VIEW v_produkt_verkaufszahlen AS
+SELECT p.sku,
+       p.name,
+       COALESCE(sum(CASE WHEN b.status NOT IN ('neu', 'storniert') THEN bp.menge else 0 END),
+                0)                                                                                         as gesamtverkaufteMenge,
+       COALESCE(SUM(CASE WHEN b.status NOT IN ('neu', 'storniert') THEN bp.menge * p.preis ELSE 0 END), 0) as umsatz,
+       COALESCE(COUNT(DISTINCT CASE WHEN b.status NOT IN ('neu', 'storniert') THEN b.bestellung_id END),
+                0)                                                                                         as anzahlBestellungen
+FROM produkt p
+         LEFT JOIN bestellposition bp ON p.sku = bp.sku
+         LEFT JOIN bestellung b ON bp.bestellung_id = b.bestellung_id
+GROUP BY p.sku, p.name
+ORDER BY gesamtverkaufteMenge DESC;
