@@ -20,7 +20,6 @@ public class ReportRepository {
 
     public List<Map<String, Object>> getProduktVerkaufszahlen() {
         return jdbc.queryForList(
-                "SELECT sku, name, gesamtverkaufteMenge, umsatz, anzahlBestellungen FROM v_produkt_verkaufszahlen"
-        );
+                "SELECT sku, name, gesamtverkaufteMenge, umsatz, anzahlBestellungen FROM v_produkt_verkaufszahlen");
     }
 }
