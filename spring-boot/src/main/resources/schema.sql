@@ -254,3 +254,17 @@ FROM mitarbeiter m
                     FROM produkt
                     GROUP BY angelegt_von) p ON m.personal_nr = p.angelegt_von
 ORDER BY m.personal_nr ASC;
+
+CREATE OR REPLACE VIEW v_mitarbeiter_bestellstatus_uebersicht AS
+WITH status_list AS (SELECT unnest(array ['neu','bezahlt','versendet','storniert','abgeschlossen']) AS status)
+SELECT m.personal_nr          AS personalNr,
+       s.status,
+       COUNT(b.bestellung_id) AS anzahlBestellungen
+FROM mitarbeiter m
+         CROSS JOIN
+     status_list s
+         LEFT JOIN
+     bestellung b
+     ON b.mitarbeiterzuweis = m.personal_nr AND b.status = s.status
+GROUP BY m.personal_nr, s.status
+ORDER BY m.personal_nr, s.status;

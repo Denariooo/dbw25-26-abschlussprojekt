@@ -1,5 +1,6 @@
 package com.dbw.spring_boot.repository;
 
+import com.dbw.spring_boot.dto.MitarbeiterBestellstatusDTO;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -28,4 +29,14 @@ public class ReportRepository {
                 "anzahlangelegterprodukte AS anzahlAngelegterProdukte FROM v_mitarbeiter_uebersicht");
     }
 
+    public List<MitarbeiterBestellstatusDTO> findMitarbeiterBestellstatusUebersicht() {
+        String sql = "SELECT personalNr, status, anzahlBestellungen FROM v_mitarbeiter_bestellstatus_uebersicht";
+        return jdbc.query(sql, (rs, rowNum) -> {
+            MitarbeiterBestellstatusDTO dto = new MitarbeiterBestellstatusDTO();
+            dto.setPersonalNr(rs.getInt("personalNr"));
+            dto.setStatus(rs.getString("status"));
+            dto.setAnzahlBestellungen(rs.getInt("anzahlBestellungen"));
+            return dto;
+        });
+    }
 }
