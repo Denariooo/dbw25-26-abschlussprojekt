@@ -22,4 +22,10 @@ public class ReportRepository {
         return jdbc.queryForList(
                 "SELECT sku, name, gesamtverkaufteMenge, umsatz, anzahlBestellungen FROM v_produkt_verkaufszahlen");
     }
+
+    public List<Map<String, Object>> getMitarbeiterUebersicht() {
+        return jdbc.queryForList("SELECT personalnr AS personalNr, anzahlverwalteterbestellungen AS anzahlVerwalteterBestellungen, " +
+                "anzahlangelegterprodukte AS anzahlAngelegterProdukte FROM v_mitarbeiter_uebersicht");
+    }
+
 }

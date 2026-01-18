@@ -241,3 +241,16 @@ FROM produkt p
          LEFT JOIN bestellung b ON bp.bestellung_id = b.bestellung_id
 GROUP BY p.sku, p.name
 ORDER BY gesamtverkaufteMenge DESC;
+
+CREATE OR REPLACE VIEW v_mitarbeiter_uebersicht AS
+SELECT m.personal_nr                      AS personalnr,
+       COALESCE(b.anzahl_bestellungen, 0) AS anzahlverwalteterbestellungen,
+       COALESCE(p.anzahl_produkte, 0)     AS anzahlangelegterprodukte
+FROM mitarbeiter m
+         LEFT JOIN (SELECT mitarbeiterzuweis, COUNT(DISTINCT bestellung_id) AS anzahl_bestellungen
+                    FROM bestellung
+                    GROUP BY mitarbeiterzuweis) b ON m.personal_nr = b.mitarbeiterzuweis
+         LEFT JOIN (SELECT angelegt_von, COUNT(DISTINCT sku) AS anzahl_produkte
+                    FROM produkt
+                    GROUP BY angelegt_von) p ON m.personal_nr = p.angelegt_von
+ORDER BY m.personal_nr ASC;

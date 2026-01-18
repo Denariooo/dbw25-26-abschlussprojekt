@@ -91,6 +91,7 @@ INSERT INTO produkt (sku, name, preis, lagerbestand, angelegt_von) VALUES
 ('SKU-1007', 'Tastatur Mechanisch', 119.99,  100,7),
 ('SKU-1008', 'Maus Wireless',       49.95,   10, 8),
 ('SKU-1009', 'USB-C Dockingstation',189.00,  14, 9),
+('SKU-1011', 'USB-C Dockingstation',189.00,  14, 1),
 ('SKU-1010', 'Headset Noise Cancel',79.99,   5,  10);
 
 INSERT INTO bestellposition (sku, bestellung_id, menge) VALUES
