@@ -45,77 +45,67 @@ public class KundeRepository {
     }
 
     public Kunde findById(int id) {
-        return queryKunden("k.kunde_id = ?", id).stream().findFirst().orElse(null);
+        String sql = "SELECT * FROM kunde WHERE kunde_id = ?";
+        return jdbc.query(sql, new Object[]{id}, rs -> {
+            if (rs.next()) {
+                Kunde k = new Kunde();
+                k.setKundeId(rs.getInt("kunde_id"));
+                k.setEmail(rs.getString("email"));
+                k.setVorname(rs.getString("vorname"));
+                k.setNachname(rs.getString("nachname"));
+                k.setPasswort(rs.getString("passwort"));
+                k.setAdressen(new ArrayList<>()); // Adressen werden separat geladen
+                return k;
+            }
+            return null;
+        });
     }
 
     public Kunde findByEmail(String email) {
-        return queryKunden("k.email = ?", email).stream().findFirst().orElse(null);
+        String sql = "SELECT * FROM kunde WHERE email = ?";
+        return jdbc.query(sql, new Object[]{email}, rs -> {
+            if (rs.next()) {
+                Kunde k = new Kunde();
+                k.setKundeId(rs.getInt("kunde_id"));
+                k.setEmail(rs.getString("email"));
+                k.setVorname(rs.getString("vorname"));
+                k.setNachname(rs.getString("nachname"));
+                k.setPasswort(rs.getString("passwort"));
+                k.setAdressen(new ArrayList<>());
+                return k;
+            }
+            return null;
+        });
+    }
+
+    public Kunde findByEmailAndPasswort(String email, String passwort) {
+        String sql = "SELECT * FROM kunde WHERE email = ? AND passwort = ?";
+        return jdbc.query(sql, new Object[]{email, passwort}, rs -> {
+            if (rs.next()) {
+                Kunde k = new Kunde();
+                k.setKundeId(rs.getInt("kunde_id"));
+                k.setEmail(rs.getString("email"));
+                k.setVorname(rs.getString("vorname"));
+                k.setNachname(rs.getString("nachname"));
+                k.setPasswort(rs.getString("passwort"));
+                k.setAdressen(new ArrayList<>());
+                return k;
+            }
+            return null;
+        });
     }
 
     public List<Kunde> findAll() {
-        return queryKunden(null, null);
+        String sql = "SELECT * FROM kunde";
+        return jdbc.query(sql, (rs, rowNum) -> {
+            Kunde k = new Kunde();
+            k.setKundeId(rs.getInt("kunde_id"));
+            k.setEmail(rs.getString("email"));
+            k.setVorname(rs.getString("vorname"));
+            k.setNachname(rs.getString("nachname"));
+            k.setPasswort(rs.getString("passwort"));
+            k.setAdressen(new ArrayList<>());
+            return k;
+        });
     }
-
-    private List<Kunde> queryKunden(String where, Object param) {
-        String sql = BASE_SQL + (where != null ? " WHERE " + where : "");
-        Map<Integer, Kunde> kunden = new LinkedHashMap<>();
-
-        jdbc.query(sql,
-                param == null ? new Object[]{} : new Object[]{param},
-                rs -> {
-                    int kid = rs.getInt("kunde_id");
-                    Kunde kunde = kunden.computeIfAbsent(kid, id -> {
-                        Kunde k = new Kunde();
-                        k.setKundeId(id);
-                        try {
-                            k.setEmail(rs.getString("kunde_email"));
-                            k.setVorname(rs.getString("kunde_vorname"));
-                            k.setNachname(rs.getString("kunde_nachname"));
-                            k.setPasswort(rs.getString("kunde_passwort"));
-                        } catch (SQLException e) {
-                            throw new RuntimeException(e);
-                        }
-                        k.setAdressen(new ArrayList<>());
-                        return k;
-                    });
-
-                    int aid = rs.getInt("adresse_id");
-                    if (!rs.wasNull()) {
-                        Adresse a = new Adresse();
-                        a.setAdresseId(aid);
-                        a.setAktiv(rs.getBoolean("adresse_aktiv"));
-                        a.setStrasse(rs.getString("adresse_strasse"));
-                        a.setHausnummer(rs.getString("adresse_hausnummer"));
-                        a.setPlz(rs.getInt("adresse_plz"));
-                        a.setOrt(rs.getString("adresse_ort"));
-                        a.setLand(rs.getString("adresse_land"));
-
-                        KundeAdresse ka = new KundeAdresse();
-                        ka.setAdresse(a);
-                        ka.setTyp(rs.getString("adresse_typ"));
-
-                        kunde.getAdressen().add(ka);
-                    }
-                });
-
-        return new ArrayList<>(kunden.values());
-    }
-
-    private static final String BASE_SQL = "SELECT " +
-            "k.kunde_id AS kunde_id, " +
-            "k.email AS kunde_email, " +
-            "k.vorname AS kunde_vorname, " +
-            "k.nachname AS kunde_nachname, " +
-            "k.passwort AS kunde_passwort, " +
-            "a.adresse_id AS adresse_id, " +
-            "a.aktiv AS adresse_aktiv, " +
-            "a.strasse AS adresse_strasse, " +
-            "a.hausnummer AS adresse_hausnummer, " +
-            "a.plz AS adresse_plz, " +
-            "a.ort AS adresse_ort, " +
-            "a.land AS adresse_land, " +
-            "ka.typ AS adresse_typ " +
-            "FROM kunde k " +
-            "LEFT JOIN kunde_hat_adressen ka ON k.kunde_id = ka.kunde_id " +
-            "LEFT JOIN adresse a ON ka.adresse_id = a.adresse_id";
 }

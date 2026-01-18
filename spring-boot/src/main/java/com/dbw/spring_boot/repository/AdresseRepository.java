@@ -1,6 +1,7 @@
 package com.dbw.spring_boot.repository;
 
 import com.dbw.spring_boot.model.Adresse;
+import com.dbw.spring_boot.model.KundeAdresse;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -73,4 +74,29 @@ public class AdresseRepository {
         );
         return findById(id);
     }
+
+    public List<KundeAdresse> findByKundeId(int kundeId) {
+        String sql = "SELECT a.adresse_id, a.aktiv, a.strasse, a.hausnummer, a.plz, a.ort, a.land, ka.typ " +
+                "FROM adresse a " +
+                "JOIN kunde_hat_adressen ka ON a.adresse_id = ka.adresse_id " +
+                "WHERE ka.kunde_id = ?";
+
+        return jdbc.query(sql, new Object[]{kundeId}, (rs, rowNum) -> {
+            Adresse adresse = new Adresse();
+            adresse.setAdresseId(rs.getInt("adresse_id"));
+            adresse.setAktiv(rs.getBoolean("aktiv"));
+            adresse.setStrasse(rs.getString("strasse"));
+            adresse.setHausnummer(rs.getString("hausnummer"));
+            adresse.setPlz(rs.getInt("plz"));
+            adresse.setOrt(rs.getString("ort"));
+            adresse.setLand(rs.getString("land"));
+
+            KundeAdresse ka = new KundeAdresse();
+            ka.setAdresse(adresse);
+            ka.setTyp(rs.getString("typ"));
+
+            return ka;
+        });
+    }
+
 }
