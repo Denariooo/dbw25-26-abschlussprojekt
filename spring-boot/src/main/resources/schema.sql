@@ -212,3 +212,18 @@ create trigger trg_bestellung_storniert
     for each row
 execute function trg_bestellung_storniert();
 
+-- ============================================================
+-- views:
+-- ============================================================
+
+CREATE OR REPLACE VIEW v_kunde_summe_anzahl_bestellungen AS
+SELECT k.kunde_id,
+       k.email,
+       COALESCE(count(b.bestellung_id), 0)  AS anzahl_bestellungen,
+       COALESCE(sum(p.preis * bp.menge), 0) AS gesamtsumme
+FROM kunde k
+         LEFT JOIN bestellung b on k.kunde_id = b.kunde_id
+         left join bestellposition bp on b.bestellung_id = bp.bestellung_id
+         LEFT JOIN produkt p on bp.sku = p.sku
+GROUP BY k.kunde_id, k.email
+ORDER BY k.kunde_id ASC;
