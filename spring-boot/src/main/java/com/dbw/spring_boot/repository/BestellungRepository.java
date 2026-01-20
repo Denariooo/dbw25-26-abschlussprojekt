@@ -96,7 +96,7 @@ public class BestellungRepository {
                 bestellung.getDatum(),
                 bestellung.getStatus()
         );
-
+        if (id == null) throw new IllegalStateException("Bestellung konnte nicht erstellt werden");
         bestellung.setBestellungId(id);
         bestellung.setPositionen(new ArrayList<>());
         return bestellung;

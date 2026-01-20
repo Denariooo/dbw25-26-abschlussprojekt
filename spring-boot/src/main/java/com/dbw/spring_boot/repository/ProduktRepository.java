@@ -22,7 +22,11 @@ public class ProduktRepository {
 
     public Produkt findBySku(String sku) {
         String sql = "SELECT sku, name, preis, lagerbestand, angelegt_von FROM produkt WHERE sku = ?";
-        return jdbc.query(sql, new Object[]{sku}, rs -> rs.next() ? mapRowToProdukt(rs) : null);
+        try {
+            return jdbc.queryForObject(sql, (rs, rowNum) -> mapRowToProdukt(rs), sku);
+        } catch (org.springframework.dao.EmptyResultDataAccessException e) {
+            return null;
+        }
     }
 
     public Produkt createProdukt(Produkt produkt) {

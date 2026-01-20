@@ -23,12 +23,10 @@ public class MitarbeiterReportController {
     public List<MitarbeiterUebersichtDTO> getMitarbeiterUebersicht() {
         List<Map<String, Object>> rows = reportRepository.getMitarbeiterUebersicht();
 
-        return rows.stream().map(row -> {
-            return new MitarbeiterUebersichtDTO(
-                    ((Number) row.get("personalNr")).intValue(),
-                    ((Number) row.get("anzahlVerwalteterBestellungen")).intValue(),
-                    ((Number) row.get("anzahlAngelegterProdukte")).intValue()
-            );
-        }).toList();
+        return rows.stream().map(row -> new MitarbeiterUebersichtDTO(
+                ((Number) row.get("personalNr")).intValue(),
+                ((Number) row.get("anzahlVerwalteterBestellungen")).intValue(),
+                ((Number) row.get("anzahlAngelegterProdukte")).intValue()
+        )).toList();
     }
 }

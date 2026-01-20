@@ -1,6 +1,7 @@
 package com.dbw.spring_boot.repository;
 
 import com.dbw.spring_boot.model.Mitarbeiter;
+import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -29,18 +30,18 @@ public class MitarbeiterRepository {
     }
 
     public Mitarbeiter findById(int id) {
-        return jdbcTemplate.queryForObject(
-                "SELECT * FROM mitarbeiter WHERE personal_nr = ?",
-                new Object[]{id},
-                (rs, rowNum) -> {
-                    Mitarbeiter m = new Mitarbeiter();
-                    m.setPersonalNr(rs.getInt("personal_nr"));
-                    m.setVorname(rs.getString("vorname"));
-                    m.setNachname(rs.getString("nachname"));
-                    m.setEmail(rs.getString("email"));
-                    m.setPasswort(rs.getString("passwort"));
-                    return m;
-                });
+        String sql = "SELECT * FROM mitarbeiter WHERE personal_nr = ?";
+        List<Mitarbeiter> list = jdbcTemplate.query(sql, (rs, rowNum) -> {
+            Mitarbeiter m = new Mitarbeiter();
+            m.setPersonalNr(rs.getInt("personal_nr"));
+            m.setVorname(rs.getString("vorname"));
+            m.setNachname(rs.getString("nachname"));
+            m.setEmail(rs.getString("email"));
+            m.setPasswort(rs.getString("passwort"));
+            return m;
+        }, id);
+
+        return DataAccessUtils.singleResult(list);
     }
 
     public void save(Mitarbeiter m) {
@@ -53,23 +54,18 @@ public class MitarbeiterRepository {
     public void deleteById(int id) {
         jdbcTemplate.update("DELETE FROM mitarbeiter WHERE personal_nr = ?", id);
     }
-    
+
     public Mitarbeiter findByPersonalNrAndPasswort(int personalNr, String passwort) {
         String sql = "SELECT * FROM mitarbeiter WHERE personal_nr = ? AND passwort = ?";
-        List<Mitarbeiter> list = jdbcTemplate.query(
-                sql,
-                new Object[]{personalNr, passwort},
-                (rs, rowNum) -> {
-                    Mitarbeiter m = new Mitarbeiter();
-                    m.setPersonalNr(rs.getInt("personal_nr"));
-                    m.setVorname(rs.getString("vorname"));
-                    m.setNachname(rs.getString("nachname"));
-                    m.setEmail(rs.getString("email"));
-                    m.setPasswort(rs.getString("passwort"));
-                    return m;
-                }
-        );
-        return list.isEmpty() ? null : list.get(0);
+        List<Mitarbeiter> list = jdbcTemplate.query(sql, (rs, rowNum) -> {
+            Mitarbeiter m = new Mitarbeiter();
+            m.setPersonalNr(rs.getInt("personal_nr"));
+            m.setVorname(rs.getString("vorname"));
+            m.setNachname(rs.getString("nachname"));
+            m.setEmail(rs.getString("email"));
+            m.setPasswort(rs.getString("passwort"));
+            return m;
+        }, personalNr, passwort);
+        return DataAccessUtils.singleResult(list);
     }
-
 }

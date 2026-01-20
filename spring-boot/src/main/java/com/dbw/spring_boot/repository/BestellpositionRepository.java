@@ -6,6 +6,8 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+import static org.springframework.dao.support.DataAccessUtils.*;
+
 @Repository
 public class BestellpositionRepository {
 
@@ -22,24 +24,31 @@ public class BestellpositionRepository {
 
     public Bestellposition findById(int id) {
         String sql = "SELECT position_id, bestellung_id, sku, menge FROM bestellposition WHERE position_id = ?";
-        return jdbc.query(sql, new Object[]{id}, rs -> rs.next() ? mapRow(rs) : null);
+        try {
+            return jdbc.queryForObject(sql, (rs, rowNum) -> mapRow(rs), id);
+        } catch (org.springframework.dao.EmptyResultDataAccessException e) {
+            return null;
+        }
     }
 
     public Bestellposition createBestellposition(Bestellposition position) {
-        Double preis = jdbc.queryForObject(
+        List<Double> preise = jdbc.query(
                 "SELECT preis FROM produkt WHERE sku = ?",
-                new Object[]{position.getProduktSku()},
-                Double.class
+                (rs, rowNum) -> rs.getDouble("preis"),
+                position.getProduktSku()
         );
-
+        Double preis = singleResult(preise);
+        if (preis == null) throw new IllegalArgumentException("Produkt mit SKU " + position.getProduktSku() + " nicht gefunden.");
         double gesamtpreis = preis * position.getMenge();
-
-        String sql = "INSERT INTO bestellposition (bestellung_id, sku, menge) VALUES (?, ?, ?) RETURNING position_id";
-        Integer id = jdbc.queryForObject(sql,
-                new Object[]{position.getBestellungId(), position.getProduktSku(), position.getMenge()},
-                Integer.class
+        List<Integer> ids = jdbc.query(
+                "INSERT INTO bestellposition (bestellung_id, sku, menge) VALUES (?, ?, ?) RETURNING position_id",
+                (rs, rowNum) -> rs.getInt("position_id"),
+                position.getBestellungId(),
+                position.getProduktSku(),
+                position.getMenge()
         );
-
+        Integer id = singleResult(ids);
+        if (id == null) throw new IllegalStateException("Fehler beim Einfügen der Bestellposition.");
         position.setPositionId(id);
         position.setGesamtpreis(gesamtpreis);
         return position;
@@ -57,11 +66,13 @@ public class BestellpositionRepository {
         p.setProduktSku(rs.getString("sku"));
         p.setMenge(rs.getInt("menge"));
 
-        Double preis = jdbc.queryForObject(
+        List<Double> preise = jdbc.query(
                 "SELECT preis FROM produkt WHERE sku = ?",
-                new Object[]{p.getProduktSku()},
-                Double.class
+                (rs2, rowNum) -> rs2.getDouble("preis"),
+                p.getProduktSku()
         );
+        Double preis = singleResult(preise);
+        if (preis == null) throw new IllegalStateException("Produkt mit SKU " + p.getProduktSku() + " nicht gefunden.");
         p.setGesamtpreis(preis * p.getMenge());
         return p;
     }
