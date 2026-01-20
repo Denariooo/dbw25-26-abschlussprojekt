@@ -25,19 +25,16 @@ public class ProduktController {
         return produktRepository.findAll();
     }
 
-    // Neues Produkt erstellen
     @PostMapping
     public Produkt createProdukt(@RequestBody Produkt produkt) {
         return produktRepository.createProdukt(produkt);
     }
 
-    // Lagerbestand eines Produkts aktualisieren
     @PutMapping("/{sku}/lagerbestand")
     public Produkt updateLagerbestand(@PathVariable String sku, @RequestParam int lagerbestand) {
         return produktRepository.updateLagerbestand(sku, lagerbestand);
     }
 
-    // Produkt löschen
     @DeleteMapping("/{sku}")
     public void deleteProdukt(@PathVariable String sku) {
         produktRepository.deleteBySku(sku);

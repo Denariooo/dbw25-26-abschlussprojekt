@@ -15,19 +15,16 @@ public class ProduktRepository {
         this.jdbc = jdbc;
     }
 
-    // Alle Produkte
     public List<Produkt> findAll() {
         String sql = "SELECT sku, name, preis, lagerbestand, angelegt_von FROM produkt";
         return jdbc.query(sql, (rs, rowNum) -> mapRowToProdukt(rs));
     }
 
-    // Einzelnes Produkt nach SKU
     public Produkt findBySku(String sku) {
         String sql = "SELECT sku, name, preis, lagerbestand, angelegt_von FROM produkt WHERE sku = ?";
         return jdbc.query(sql, new Object[]{sku}, rs -> rs.next() ? mapRowToProdukt(rs) : null);
     }
 
-    // Neues Produkt erstellen
     public Produkt createProdukt(Produkt produkt) {
         String sql = "INSERT INTO produkt (sku, name, preis, lagerbestand, angelegt_von) VALUES (?, ?, ?, ?, ?)";
         jdbc.update(sql,
@@ -40,13 +37,11 @@ public class ProduktRepository {
         return produkt;
     }
 
-    // Produkt löschen
     public void deleteBySku(String sku) {
         String sql = "DELETE FROM produkt WHERE sku = ?";
         jdbc.update(sql, sku);
     }
 
-    // Lagerbestand ändern
     public Produkt updateLagerbestand(String sku, int neuerLagerbestand) {
         String sql = "UPDATE produkt SET lagerbestand = ? WHERE sku = ?";
         jdbc.update(sql, neuerLagerbestand, sku);
@@ -55,7 +50,6 @@ public class ProduktRepository {
         return p;
     }
 
-    // Mapper von ResultSet zu Produkt
     private Produkt mapRowToProdukt(java.sql.ResultSet rs) throws java.sql.SQLException {
         Produkt p = new Produkt();
         p.setSku(rs.getString("sku"));

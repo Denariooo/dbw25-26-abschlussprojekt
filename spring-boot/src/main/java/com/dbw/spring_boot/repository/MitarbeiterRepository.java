@@ -70,7 +70,7 @@ public class MitarbeiterRepository {
                     m.setEmail(rs.getString("email"));
                     m.setVorname(rs.getString("vorname"));
                     m.setNachname(rs.getString("nachname"));
-                    m.setPasswort(null); // WICHTIG
+                    m.setPasswort(null);
                     return m;
                 },
                 personalNr,

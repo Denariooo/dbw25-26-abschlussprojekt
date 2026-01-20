@@ -1,16 +1,11 @@
 package com.dbw.spring_boot.repository;
 
-import com.dbw.spring_boot.model.Adresse;
 import com.dbw.spring_boot.model.Kunde;
-import com.dbw.spring_boot.model.KundeAdresse;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 @Repository
 public class KundeRepository {
@@ -54,7 +49,7 @@ public class KundeRepository {
                 k.setVorname(rs.getString("vorname"));
                 k.setNachname(rs.getString("nachname"));
                 k.setPasswort(rs.getString("passwort"));
-                k.setAdressen(new ArrayList<>()); // Adressen werden separat geladen
+                k.setAdressen(new ArrayList<>());
                 return k;
             }
             return null;

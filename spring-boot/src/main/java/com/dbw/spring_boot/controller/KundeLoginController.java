@@ -29,30 +29,25 @@ public class KundeLoginController {
 
     @PostMapping("/kunde")
     public ResponseEntity<KundeLoginResponse> login(@RequestBody KundeLoginRequest request) {
-        // Kunde über Email & Passwort suchen
         Kunde k = kundeRepository.findByEmailAndPasswort(request.getEmail(), request.getPasswort());
 
         if (k == null) {
-            // Kein Kunde gefunden → 401
             KundeLoginResponse empty = new KundeLoginResponse();
             empty.setAdressen(List.of());
             return ResponseEntity.status(401).body(empty);
         }
 
-        // Adressen für den Kunden laden
         List<KundeAdresse> kundeAdressen = adresseRepository.findByKundeId(k.getKundeId());
         List<Adresse> adressen = kundeAdressen.stream()
                 .map(KundeAdresse::getAdresse)
                 .toList();
 
-
-        // Response zusammenbauen
         KundeLoginResponse response = new KundeLoginResponse();
         response.setKundeId(k.getKundeId());
         response.setEmail(k.getEmail());
         response.setVorname(k.getVorname());
         response.setNachname(k.getNachname());
-        response.setPasswort(null); // MUSS null sein!
+        response.setPasswort(null);
         response.setAdressen(adressen);
 
         return ResponseEntity.ok(response);

@@ -10,7 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/report/mitarbeiter")
-public class BestellstatusController {  // <-- neuer Name
+public class BestellstatusController {
     private final ReportRepository reportRepository;
 
     public BestellstatusController(ReportRepository reportRepository) {

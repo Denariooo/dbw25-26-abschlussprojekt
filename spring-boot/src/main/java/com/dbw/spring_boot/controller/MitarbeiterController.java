@@ -4,7 +4,6 @@ import com.dbw.spring_boot.model.Mitarbeiter;
 import com.dbw.spring_boot.repository.MitarbeiterRepository;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.SQLException;
 import java.util.List;
 
 @RestController
@@ -18,22 +17,22 @@ public class MitarbeiterController {
     }
 
     @GetMapping
-    public List<Mitarbeiter> alleMitarbeiter() throws SQLException {
+    public List<Mitarbeiter> alleMitarbeiter() {
         return repository.findAll();
     }
 
     @GetMapping(params = "id")
-    public Mitarbeiter einzelnerMitarbeiter(@RequestParam int id) throws SQLException {
+    public Mitarbeiter einzelnerMitarbeiter(@RequestParam int id) {
         return repository.findById(id);
     }
 
     @PostMapping
-    public void neuerMitarbeiter(@RequestBody Mitarbeiter m) throws SQLException {
+    public void neuerMitarbeiter(@RequestBody Mitarbeiter m) {
         repository.save(m);
     }
 
     @DeleteMapping
-    public void loescheMitarbeiter(@RequestParam int id) throws SQLException {
+    public void loescheMitarbeiter(@RequestParam int id) {
         repository.deleteById(id);
     }
 }

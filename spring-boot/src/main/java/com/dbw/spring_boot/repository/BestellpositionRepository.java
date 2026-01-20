@@ -26,7 +26,6 @@ public class BestellpositionRepository {
     }
 
     public Bestellposition createBestellposition(Bestellposition position) {
-        // Preis vom Produkt abfragen
         Double preis = jdbc.queryForObject(
                 "SELECT preis FROM produkt WHERE sku = ?",
                 new Object[]{position.getProduktSku()},
