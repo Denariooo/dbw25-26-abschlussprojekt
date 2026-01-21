@@ -25,7 +25,7 @@ public class BestellungRepository {
             Bestellung b = new Bestellung();
             b.setBestellungId(rs.getInt("bestellung_id"));
             b.setKundeId(rs.getInt("kunde_id"));
-            b.setMitarbeiterzuweis(rs.getInt("mitarbeiterzuweis"));
+            b.setPersonalnr(rs.getInt("mitarbeiterzuweis"));
             b.setStatus(rs.getString("status"));
             b.setDatum(rs.getObject("datum", OffsetDateTime.class));
             b.setPositionen(findPositionenByBestellungId(b.getBestellungId()));
@@ -39,7 +39,7 @@ public class BestellungRepository {
             Bestellung b = new Bestellung();
             b.setBestellungId(rs.getInt("bestellung_id"));
             b.setKundeId(rs.getInt("kunde_id"));
-            b.setMitarbeiterzuweis(rs.getInt("mitarbeiterzuweis"));
+            b.setPersonalnr(rs.getInt("mitarbeiterzuweis"));
             b.setStatus(rs.getString("status"));
             b.setDatum(rs.getObject("datum", OffsetDateTime.class));
             b.setPositionen(findPositionenByBestellungId(id));
@@ -49,20 +49,13 @@ public class BestellungRepository {
 
     private List<Bestellposition> findPositionenByBestellungId(int bestellungId) {
         String sql = """
-                    SELECT bp.position_id,
-                           bp.bestellung_id,
-                           bp.sku,
-                           bp.menge,
-                           (bp.menge * p.preis) AS gesamtpreis,
-                           p.name,
-                           p.preis,
-                           p.lagerbestand,
-                           p.angelegt_von
-                    FROM bestellposition bp
-                    JOIN produkt p ON bp.sku = p.sku
-                    WHERE bp.bestellung_id = ?
-                """;
-
+        SELECT bp.position_id, bp.bestellung_id, bp.sku, bp.menge,
+               (bp.menge * p.preis) AS gesamtpreis,
+               p.name, p.preis, p.lagerbestand, p.angelegt_von
+        FROM bestellposition bp
+        JOIN produkt p ON bp.sku = p.sku
+        WHERE bp.bestellung_id = ?
+    """;
         return jdbc.query(sql, (rs, rowNum) -> {
             Produkt p = new Produkt();
             p.setSku(rs.getString("sku"));
@@ -74,12 +67,13 @@ public class BestellungRepository {
             Bestellposition bp = new Bestellposition();
             bp.setPositionId(rs.getInt("position_id"));
             bp.setBestellungId(rs.getInt("bestellung_id"));
-            bp.setProdukt(p);
+            bp.setProduktSku(rs.getString("sku")); // <- hier fehlt es bisher
             bp.setMenge(rs.getInt("menge"));
             bp.setGesamtpreis(rs.getDouble("gesamtpreis"));
             return bp;
         }, bestellungId);
     }
+
 
     public Bestellung createBestellung(Bestellung bestellung) {
         String sql = """
@@ -92,7 +86,7 @@ public class BestellungRepository {
                 sql,
                 Integer.class,
                 bestellung.getKundeId(),
-                bestellung.getMitarbeiterzuweis(),
+                bestellung.getPersonalnr(),
                 bestellung.getDatum(),
                 bestellung.getStatus()
         );
@@ -102,7 +96,10 @@ public class BestellungRepository {
         return bestellung;
     }
 
-    public void deleteBestellung(int id) {
-        jdbc.update("DELETE FROM bestellung WHERE bestellung_id = ?", id);
+    public boolean deleteBestellung(int id) {
+        int rows = jdbc.update(
+                "DELETE FROM bestellung WHERE bestellung_id = ?", id
+        );
+        return rows > 0;
     }
 }

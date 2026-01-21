@@ -2,7 +2,7 @@ CREATE TABLE adresse
 (
     adresse_id serial PRIMARY KEY,
     aktiv      boolean        NOT NULL,
-    strasse    varchar(60)    NOT NULL check (strasse ~ '^[A-ZÄÖÜ][a-zäöüßA-ZÄÖÜ]*$'),
+    strasse    varchar(60)    NOT NULL check (strasse ~ '^[A-ZÄÖÜ][a-zäöüß]*$'),
     hausnummer varchar(10)    NOT NULL check (hausnummer ~ '^[0-9]+[a-z]?$'),
     plz        numeric(12, 0) NOT NULL,
     ort        varchar(100)   NOT NULL,
@@ -29,8 +29,8 @@ CREATE TABLE kunde_hat_adressen
     kunde_id   int,
     typ        varchar(20) NOT NULL check (typ IN ('Rechnungsadresse', 'Lieferadresse')),
     PRIMARY KEY (adresse_id, kunde_id),
-    FOREIGN KEY (adresse_id) REFERENCES adresse (adresse_id),
-    FOREIGN KEY (kunde_id) REFERENCES kunde (kunde_id)
+    FOREIGN KEY (adresse_id) REFERENCES adresse (adresse_id) ON DELETE CASCADE,
+    FOREIGN KEY (kunde_id) REFERENCES kunde (kunde_id) ON DELETE CASCADE
 );
 
 -- Für mitarbeiter.vorname/nachname wurden bewusst keine checks definiert,
@@ -56,8 +56,8 @@ CREATE TABLE bestellung
     status            varchar(20)              NOT NULL check (status IN ('neu', 'bezahlt', 'versendet', 'abgeschlossen', 'storniert')),
     mitarbeiterzuweis int                      NOT NULL,
     kunde_id          int                      NOT NULL,
-    FOREIGN KEY (mitarbeiterzuweis) REFERENCES mitarbeiter (personal_nr),
-    FOREIGN KEY (kunde_id) REFERENCES kunde (kunde_id)
+    FOREIGN KEY (mitarbeiterzuweis) REFERENCES mitarbeiter (personal_nr) ON DELETE CASCADE,
+    FOREIGN KEY (kunde_id) REFERENCES kunde (kunde_id) ON DELETE CASCADE
 );
 
 CREATE TABLE produkt
@@ -67,7 +67,7 @@ CREATE TABLE produkt
     preis        decimal(10, 2) NOT NULL,
     lagerbestand int            NOT NULL check (lagerbestand >= 0),
     angelegt_von int            NOT NULL,
-    FOREIGN KEY (angelegt_von) REFERENCES mitarbeiter (personal_nr)
+    FOREIGN KEY (angelegt_von) REFERENCES mitarbeiter (personal_nr) ON DELETE CASCADE
 );
 
 CREATE TABLE bestellposition
@@ -76,8 +76,8 @@ CREATE TABLE bestellposition
     menge         int          NOT NULL check (menge > 0),
     sku           varchar(255) NOT NULL,
     bestellung_id int          NOT NULL,
-    FOREIGN KEY (sku) REFERENCES produkt (sku),
-    FOREIGN KEY (bestellung_id) REFERENCES bestellung (bestellung_id)
+    FOREIGN KEY (sku) REFERENCES produkt (sku) ON DELETE CASCADE,
+    FOREIGN KEY (bestellung_id) REFERENCES bestellung (bestellung_id) ON DELETE CASCADE
 );
 
 -- ============================================================

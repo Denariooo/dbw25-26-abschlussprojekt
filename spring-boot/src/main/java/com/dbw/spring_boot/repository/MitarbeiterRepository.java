@@ -1,6 +1,7 @@
 package com.dbw.spring_boot.repository;
 
 import com.dbw.spring_boot.model.Mitarbeiter;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -44,15 +45,23 @@ public class MitarbeiterRepository {
         return DataAccessUtils.singleResult(list);
     }
 
-    public void save(Mitarbeiter m) {
-        jdbcTemplate.update(
-                "INSERT INTO mitarbeiter (vorname, nachname, email, passwort) VALUES (?, ?, ?, ?)",
-                m.getVorname(), m.getNachname(), m.getEmail(), m.getPasswort()
+    public Mitarbeiter save(Mitarbeiter m) {
+        String sql = "INSERT INTO mitarbeiter (vorname, nachname, email, passwort) VALUES (?, ?, ?, ?) RETURNING personal_nr";
+        List<Integer> ids = jdbcTemplate.query(
+                sql,
+                new Object[]{m.getVorname(), m.getNachname(), m.getEmail(), m.getPasswort()},
+                (rs, rowNum) -> rs.getInt("personal_nr")
         );
+        Integer id = DataAccessUtils.singleResult(ids);
+        if (id == null) throw new EmptyResultDataAccessException("Insert failed, no ID returned", 1);
+        m.setPersonalNr(id);
+        return m;
     }
 
-    public void deleteById(int id) {
-        jdbcTemplate.update("DELETE FROM mitarbeiter WHERE personal_nr = ?", id);
+    public int deleteById(int id) {
+        return jdbcTemplate.update(
+                "DELETE FROM mitarbeiter WHERE personal_nr = ?", id
+        );
     }
 
     public Mitarbeiter findByPersonalNrAndPasswort(int personalNr, String passwort) {

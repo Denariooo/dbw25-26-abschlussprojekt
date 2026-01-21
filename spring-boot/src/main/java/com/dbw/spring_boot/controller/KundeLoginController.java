@@ -37,10 +37,10 @@ public class KundeLoginController {
             return ResponseEntity.status(401).body(empty);
         }
 
-        List<KundeAdresse> kundeAdressen = adresseRepository.findByKundeId(k.getKundeId());
+        /*List<KundeAdresse> kundeAdressen = adresseRepository.findByKundeId(k.getKundeId());
         List<Adresse> adressen = kundeAdressen.stream()
                 .map(KundeAdresse::getAdresse)
-                .toList();
+                .toList();*/
 
         KundeLoginResponse response = new KundeLoginResponse();
         response.setKundeId(k.getKundeId());
@@ -48,7 +48,7 @@ public class KundeLoginController {
         response.setVorname(k.getVorname());
         response.setNachname(k.getNachname());
         response.setPasswort(null);
-        response.setAdressen(adressen);
+        response.setAdressen(List.of());
 
         return ResponseEntity.ok(response);
     }

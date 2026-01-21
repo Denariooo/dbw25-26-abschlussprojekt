@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class Adresse {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private int adresseId;
-    private int kundeId;
+//    private int kundeId;
 
     private boolean aktiv;
     private String strasse;
@@ -70,11 +70,11 @@ public class Adresse {
         this.land = land;
     }
 
-    public int getKundeId() {
+   /* public int getKundeId() {
         return kundeId;
     }
 
     public void setKundeId(int kundeId) {
         this.kundeId = kundeId;
-    }
+    }*/
 }

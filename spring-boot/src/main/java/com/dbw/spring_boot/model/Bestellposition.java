@@ -6,12 +6,14 @@ public class Bestellposition {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private int positionId;
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private Produkt produkt;
+//    private Produkt produkt;
 
     private int bestellungId;
     private String produktSku;
     private int menge;
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+
     private double gesamtpreis;
 
     public int getPositionId() {
@@ -54,11 +56,11 @@ public class Bestellposition {
         this.gesamtpreis = gesamtpreis;
     }
 
-    public Produkt getProdukt() {
+   /* public Produkt getProdukt() {
         return produkt;
     }
 
     public void setProdukt(Produkt produkt) {
         this.produkt = produkt;
-    }
+    }*/
 }

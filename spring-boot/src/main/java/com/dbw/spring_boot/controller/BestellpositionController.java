@@ -2,6 +2,7 @@ package com.dbw.spring_boot.controller;
 
 import com.dbw.spring_boot.model.Bestellposition;
 import com.dbw.spring_boot.repository.BestellpositionRepository;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,21 +18,37 @@ public class BestellpositionController {
     }
 
     @GetMapping
-    public List<Bestellposition> getBestellpositionen(@RequestParam(required = false) Integer id) {
+    public ResponseEntity<List<Bestellposition>> getBestellpositionen(
+            @RequestParam(required = false) Integer id) {
+
         if (id != null) {
             Bestellposition p = repo.findById(id);
-            return p != null ? List.of(p) : List.of();
+            if (p == null) {
+                return ResponseEntity.notFound().build(); // 404
+            }
+            return ResponseEntity.ok(List.of(p));
         }
-        return repo.findAll();
+
+        return ResponseEntity.ok(repo.findAll());
     }
 
+    // ✅ 201 Created
     @PostMapping
-    public Bestellposition createBestellposition(@RequestBody Bestellposition position) {
-        return repo.createBestellposition(position);
+    public ResponseEntity<Bestellposition> createBestellposition(
+            @RequestBody Bestellposition position) {
+
+        Bestellposition created = repo.createBestellposition(position);
+        return ResponseEntity.status(201).body(created);
     }
 
+    // ✅ 204 oder 404
     @DeleteMapping("/{id}")
-    public void deleteBestellposition(@PathVariable int id) {
-        repo.deleteById(id);
+    public ResponseEntity<Void> deleteBestellposition(@PathVariable int id) {
+
+        boolean deleted = repo.deleteById(id);
+        if (!deleted) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.noContent().build(); // 204
     }
 }

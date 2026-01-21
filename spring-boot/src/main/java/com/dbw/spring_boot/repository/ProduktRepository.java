@@ -41,9 +41,9 @@ public class ProduktRepository {
         return produkt;
     }
 
-    public void deleteBySku(String sku) {
+    public boolean deleteBySku(String sku) {
         String sql = "DELETE FROM produkt WHERE sku = ?";
-        jdbc.update(sql, sku);
+        return jdbc.update(sql, sku) > 0;
     }
 
     public Produkt updateLagerbestand(String sku, int neuerLagerbestand) {

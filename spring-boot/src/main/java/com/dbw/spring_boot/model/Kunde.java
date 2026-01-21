@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
 public class Kunde {
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private int kundeId;
     private String email;
     private String vorname;

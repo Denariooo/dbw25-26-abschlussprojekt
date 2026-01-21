@@ -38,11 +38,11 @@ public class Bestellung {
         this.kundeId = kundeId;
     }
 
-    public int getMitarbeiterzuweis() {
+    public int getPersonalnr() {
         return mitarbeiterzuweis;
     }
 
-    public void setMitarbeiterzuweis(int mitarbeiterzuweis) {
+    public void setPersonalnr(int mitarbeiterzuweis) {
         this.mitarbeiterzuweis = mitarbeiterzuweis;
     }
 

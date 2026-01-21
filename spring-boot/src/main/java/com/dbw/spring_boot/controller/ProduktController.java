@@ -2,8 +2,10 @@ package com.dbw.spring_boot.controller;
 
 import com.dbw.spring_boot.model.Produkt;
 import com.dbw.spring_boot.repository.ProduktRepository;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -17,26 +19,33 @@ public class ProduktController {
     }
 
     @GetMapping
-    public List<Produkt> getProdukte(@RequestParam(required = false) String sku) {
+    public ResponseEntity<List<Produkt>> getProdukte(@RequestParam(required = false) String sku) {
         if (sku != null) {
             Produkt p = produktRepository.findBySku(sku);
-            return p != null ? List.of(p) : List.of();
+            if (p == null) return ResponseEntity.notFound().build();
+            return ResponseEntity.ok(List.of(p));
         }
-        return produktRepository.findAll();
+        return ResponseEntity.ok(produktRepository.findAll());
     }
 
     @PostMapping
-    public Produkt createProdukt(@RequestBody Produkt produkt) {
-        return produktRepository.createProdukt(produkt);
+    public ResponseEntity<Produkt> createProdukt(@RequestBody Produkt produkt) {
+        Produkt created = produktRepository.createProdukt(produkt);
+        URI location = URI.create("/produkte/" + created.getSku());
+        return ResponseEntity.created(location).body(created);
     }
 
     @PutMapping("/{sku}/lagerbestand")
-    public Produkt updateLagerbestand(@PathVariable String sku, @RequestParam int lagerbestand) {
-        return produktRepository.updateLagerbestand(sku, lagerbestand);
+    public ResponseEntity<Produkt> updateLagerbestand(@PathVariable String sku, @RequestParam int lagerbestand) {
+        Produkt updated = produktRepository.updateLagerbestand(sku, lagerbestand);
+        if (updated == null) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(updated);
     }
 
     @DeleteMapping("/{sku}")
-    public void deleteProdukt(@PathVariable String sku) {
-        produktRepository.deleteBySku(sku);
+    public ResponseEntity<Void> deleteProdukt(@PathVariable String sku) {
+        boolean deleted = produktRepository.deleteBySku(sku);
+        if (!deleted) return ResponseEntity.notFound().build();
+        return ResponseEntity.noContent().build();
     }
 }
