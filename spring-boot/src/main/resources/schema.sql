@@ -2,6 +2,7 @@ CREATE TABLE adresse
 (
     adresse_id serial PRIMARY KEY,
     aktiv      boolean        NOT NULL,
+    -- Für strasse wurde angenommen, dass tatsächlich nur reine Buchstabenfolgen ohne Leerzeichen/Bindestrich gemeint sind
     strasse    varchar(60)    NOT NULL check (strasse ~ '^[A-ZÄÖÜ][a-zäöüß]*$'),
     hausnummer varchar(10)    NOT NULL check (hausnummer ~ '^[0-9]+[a-z]?$'),
     plz        numeric(12, 0) NOT NULL,
@@ -12,6 +13,8 @@ CREATE TABLE adresse
 CREATE TABLE kunde
 (
     kunde_id serial PRIMARY KEY,
+    -- Stellt sicher für email: @ vor dem Punkt (Anforderung)
+    -- Zusätzlich: Das vor/nach den Symbolen Zeichen stehen, um invalide Formate wie "@.de" oder "test@." auszuschließen
     email    varchar(256) NOT NULL UNIQUE check (email ~ '^[^@]+@[^@]+\.[^@]+$'),
     vorname  varchar(32)  NOT NULL check (vorname ~ '^[A-ZÄÖÜa-zäöüß]+$'),
     nachname varchar(32)  NOT NULL check (nachname ~ '^[A-ZÄÖÜa-zäöüß]+$'),
@@ -35,6 +38,7 @@ CREATE TABLE kunde_hat_adressen
 
 -- Für mitarbeiter.vorname/nachname wurden bewusst keine checks definiert,
 -- da, hierfür in der Aufgabenstellung keine zusätzlichen Anforderungen gestellt wurden.
+-- Ebenso wurde nicht das unique constraint für email hinzugefügt, da dies nicht explizit gefordert wurde.
 CREATE TABLE mitarbeiter
 (
     personal_nr serial PRIMARY KEY,
@@ -83,6 +87,8 @@ CREATE TABLE bestellposition
 -- ============================================================
 -- Trigger:
 -- ============================================================
+
+-- bestellung
 
 CREATE OR REPLACE FUNCTION check_status_storniert()
     RETURNS TRIGGER AS
