@@ -43,4 +43,16 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.badRequest().body(body);
     }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<?> handleJsonParseError(HttpMessageNotReadableException ex) {
+
+        return ResponseEntity.badRequest().body(
+                Map.of(
+                        "error", "Bad Request",
+                        "message", "Ungültiges JSON oder ungültiger Datentyp",
+                        "status", 400
+                )
+        );
+    }
 }
