@@ -37,6 +37,7 @@ public class KundeLoginController {
             return ResponseEntity.status(401).body(empty);
         }
 
+        // Kundenadressen sollen laut Forum Beitrag nicht mitgeliefert werden
         /*List<KundeAdresse> kundeAdressen = adresseRepository.findByKundeId(k.getKundeId());
         List<Adresse> adressen = kundeAdressen.stream()
                 .map(KundeAdresse::getAdresse)
