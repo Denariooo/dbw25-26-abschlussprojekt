@@ -1,18 +1,18 @@
 package com.dbw.spring_boot.dto;
 
 public class BestellpositionDTO {
-    private int positionId;
+    private int positionsId;
     private int bestellungId;
     private ProduktDTO produkt;
     private int menge;
     private double gesamtpreis;
 
-    public int getPositionId() {
-        return positionId;
+    public int getPositionsId() {
+        return positionsId;
     }
 
-    public void setPositionId(int positionId) {
-        this.positionId = positionId;
+    public void setPositionsId(int positionsId) {
+        this.positionsId = positionsId;
     }
 
     public int getBestellungId() {

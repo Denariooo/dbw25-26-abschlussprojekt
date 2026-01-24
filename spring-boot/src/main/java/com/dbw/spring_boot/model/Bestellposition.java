@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Bestellposition {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private int positionId;
+    private int positionsId;
     private int bestellungId;
     private String produktSku;
     private int menge;
@@ -13,12 +13,12 @@ public class Bestellposition {
 
     private double gesamtpreis;
 
-    public int getPositionId() {
-        return positionId;
+    public int getPositionsId() {
+        return positionsId;
     }
 
-    public void setPositionId(int positionId) {
-        this.positionId = positionId;
+    public void setPositionsId(int positionsId) {
+        this.positionsId = positionsId;
     }
 
     public int getBestellungId() {
