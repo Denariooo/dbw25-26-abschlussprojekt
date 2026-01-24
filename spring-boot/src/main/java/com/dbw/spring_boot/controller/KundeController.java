@@ -57,7 +57,6 @@ public class KundeController {
         }
     }
 
-    //Aufgabenstellung: Alle Attributes eines Kundes ändern => d.h. nur Attribute des Kunden, nicht Adressen
     @PutMapping("/{id}")
     public ResponseEntity<Kunde> updateKunde(@PathVariable int id, @RequestBody Kunde kunde) {
         Kunde existierender = kundeRepository.findById(id);

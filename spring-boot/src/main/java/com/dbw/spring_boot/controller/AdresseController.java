@@ -34,26 +34,23 @@ public class AdresseController {
         if (a == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(a); // 200
+        return ResponseEntity.ok(a);
     }
 
-    // POST /adressen
     @PostMapping
     public ResponseEntity<Adresse> createAdresse(@RequestBody Adresse adresse) {
         Adresse created = adresseRepository.createAdresse(adresse);
-        // Location-Header setzen
         URI location = URI.create("/adressen/" + created.getAdresseId());
-        return ResponseEntity.created(location).body(created); // 201
+        return ResponseEntity.created(location).body(created);
     }
 
-    // PUT /adressen/{id}
     @PutMapping("/{id}")
     public ResponseEntity<Adresse> updateAdresse(@PathVariable int id, @RequestBody Adresse adresse) {
         Adresse existing = adresseRepository.findById(id);
         if (existing == null) {
-            return ResponseEntity.notFound().build(); // 404
+            return ResponseEntity.notFound().build();
         }
         Adresse updated = adresseRepository.updateAdresse(id, adresse);
-        return ResponseEntity.ok(updated); // 200
+        return ResponseEntity.ok(updated);
     }
 }

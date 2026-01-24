@@ -24,7 +24,7 @@ public class BestellpositionController {
         if (id != null) {
             Bestellposition p = repo.findById(id);
             if (p == null) {
-                return ResponseEntity.notFound().build(); // 404
+                return ResponseEntity.notFound().build();
             }
             return ResponseEntity.ok(List.of(p));
         }
@@ -32,7 +32,6 @@ public class BestellpositionController {
         return ResponseEntity.ok(repo.findAll());
     }
 
-    // ✅ 201 Created
     @PostMapping
     public ResponseEntity<Bestellposition> createBestellposition(
             @RequestBody Bestellposition position) {
@@ -41,7 +40,6 @@ public class BestellpositionController {
         return ResponseEntity.status(201).body(created);
     }
 
-    // ✅ 204 oder 404
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBestellposition(@PathVariable int id) {
 
@@ -49,6 +47,6 @@ public class BestellpositionController {
         if (!deleted) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.noContent().build(); // 204
+        return ResponseEntity.noContent().build();
     }
 }

@@ -37,8 +37,7 @@ public class MitarbeiterController {
         Mitarbeiter saved = repository.save(m);
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
-
-
+    
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> loescheMitarbeiter(@PathVariable int id) {
         int rowsAffected = repository.deleteById(id);

@@ -5,9 +5,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class Bestellposition {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private int positionId;
-
-//    private Produkt produkt;
-
     private int bestellungId;
     private String produktSku;
     private int menge;
@@ -55,12 +52,4 @@ public class Bestellposition {
     public void setGesamtpreis(double gesamtpreis) {
         this.gesamtpreis = gesamtpreis;
     }
-
-   /* public Produkt getProdukt() {
-        return produkt;
-    }
-
-    public void setProdukt(Produkt produkt) {
-        this.produkt = produkt;
-    }*/
 }

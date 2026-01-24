@@ -80,7 +80,7 @@ public class BestellungController {
             dto.setPersonalnr(b.getPersonalnr());
             dto.setDatum(b.getDatum());
             dto.setStatus(b.getStatus());
-            dto.setPositionen(List.of()); // Neu erstellte Bestellung hat noch keine Positionen
+            dto.setPositionen(List.of());
             return ResponseEntity.status(201).body(dto);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
@@ -90,6 +90,6 @@ public class BestellungController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBestellung(@PathVariable int id) {
         bestellungRepo.deleteBestellung(id);
-        return ResponseEntity.noContent().build(); // 204
+        return ResponseEntity.noContent().build();
     }
 }
