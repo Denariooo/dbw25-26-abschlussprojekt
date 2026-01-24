@@ -65,7 +65,7 @@ public class BestellungRepository {
             p.setAngelegtVon(rs.getInt("angelegt_von"));
 
             Bestellposition bp = new Bestellposition();
-            bp.setPositionId(rs.getInt("position_id"));
+            bp.setPositionsId(rs.getInt("position_id"));
             bp.setBestellungId(rs.getInt("bestellung_id"));
             bp.setProduktSku(rs.getString("sku"));
             bp.setMenge(rs.getInt("menge"));

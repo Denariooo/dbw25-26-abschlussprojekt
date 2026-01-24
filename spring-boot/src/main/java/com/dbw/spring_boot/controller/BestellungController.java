@@ -45,7 +45,7 @@ public class BestellungController {
 
             List<BestellpositionDTO> positionDtos = b.getPositionen().stream().map(bp -> {
                 BestellpositionDTO bpDto = new BestellpositionDTO();
-                bpDto.setPositionId(bp.getPositionId());
+                bpDto.setPositionsId(bp.getPositionsId());
                 bpDto.setBestellungId(bp.getBestellungId());
                 bpDto.setMenge(bp.getMenge());
                 bpDto.setGesamtpreis(bp.getGesamtpreis());
@@ -89,7 +89,12 @@ public class BestellungController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBestellung(@PathVariable int id) {
-        bestellungRepo.deleteBestellung(id);
-        return ResponseEntity.noContent().build();
+        try {
+            boolean deleted = bestellungRepo.deleteBestellung(id);
+            if (!deleted) return ResponseEntity.notFound().build();
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 }

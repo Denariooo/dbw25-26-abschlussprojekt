@@ -3,13 +3,10 @@ package com.dbw.spring_boot.repository;
 import com.dbw.spring_boot.model.Bestellposition;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
 import static org.springframework.dao.support.DataAccessUtils.*;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @Repository
 public class BestellpositionRepository {
@@ -52,7 +49,7 @@ public class BestellpositionRepository {
         );
         Integer id = singleResult(ids);
         if (id == null) throw new IllegalStateException("Fehler beim Einfügen der Bestellposition.");
-        position.setPositionId(id);
+        position.setPositionsId(id);
         position.setGesamtpreis(gesamtpreis);
         return position;
     }
@@ -67,7 +64,7 @@ public class BestellpositionRepository {
 
     private Bestellposition mapRow(java.sql.ResultSet rs) throws java.sql.SQLException {
         Bestellposition p = new Bestellposition();
-        p.setPositionId(rs.getInt("position_id"));
+        p.setPositionsId(rs.getInt("position_id"));
         p.setBestellungId(rs.getInt("bestellung_id"));
         p.setProduktSku(rs.getString("sku"));
         p.setMenge(rs.getInt("menge"));

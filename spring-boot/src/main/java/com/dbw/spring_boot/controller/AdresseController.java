@@ -25,16 +25,8 @@ public class AdresseController {
             if (a == null) return ResponseEntity.notFound().build();
             return ResponseEntity.ok(List.of(a));
         }
-        return ResponseEntity.ok(adresseRepository.findAll());
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Adresse> getAdresseById(@PathVariable int id) {
-        Adresse a = adresseRepository.findById(id);
-        if (a == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(a);
+        List<Adresse> all = adresseRepository.findAll();
+        return ResponseEntity.ok(all);
     }
 
     @PostMapping
