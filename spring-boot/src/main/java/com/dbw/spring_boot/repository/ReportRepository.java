@@ -1,5 +1,6 @@
 package com.dbw.spring_boot.repository;
 
+import com.dbw.spring_boot.dto.KundeReportDTO;
 import com.dbw.spring_boot.dto.MitarbeiterBestellstatusDTO;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -15,8 +16,17 @@ public class ReportRepository {
         this.jdbc = jdbc;
     }
 
-    public List<Map<String, Object>> getKundeSummeAnzahlBestellungen() {
-        return jdbc.queryForList("SELECT kunde_id, email, anzahl_bestellungen, gesamtsumme from v_kunde_summe_anzahl_bestellungen");
+    public List<KundeReportDTO> getKundeSummeAnzahlBestellungen() {
+        String sql = "SELECT kunde_id, email, anzahl_bestellungen, gesamtsumme FROM v_kunde_summe_anzahl_bestellungen";
+
+        return jdbc.query(sql, (rs, rowNum) -> {
+            KundeReportDTO dto = new KundeReportDTO();
+            dto.setKundeId(rs.getInt("kunde_id"));
+            dto.setEmail(rs.getString("email"));
+            dto.setAnzahlBestellungen(rs.getInt("anzahl_bestellungen"));
+            dto.setGesamtsumme(rs.getDouble("gesamtsumme"));
+            return dto;
+        });
     }
 
     public List<Map<String, Object>> getProduktVerkaufszahlen() {

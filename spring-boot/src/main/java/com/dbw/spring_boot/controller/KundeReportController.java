@@ -1,5 +1,6 @@
 package com.dbw.spring_boot.controller;
 
+import com.dbw.spring_boot.dto.KundeReportDTO;
 import com.dbw.spring_boot.repository.ReportRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,17 +12,16 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/report/kunde")
-public class ReportController {
+public class KundeReportController {
 
     private final ReportRepository reportRepository;
 
-    public ReportController(ReportRepository reportRepository) {
+    public KundeReportController(ReportRepository reportRepository) {
         this.reportRepository = reportRepository;
     }
 
     @GetMapping("/summe-anzahl-bestellungen")
-    public ResponseEntity<List<Map<String, Object>>> getKundeSummeAnzahlBestellungen() {
-        List<Map<String, Object>> report = reportRepository.getKundeSummeAnzahlBestellungen();
-        return ResponseEntity.ok(report);
+    public List<KundeReportDTO> getKundeSummeAnzahlBestellungen() {
+        return reportRepository.getKundeSummeAnzahlBestellungen();
     }
 }
